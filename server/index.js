@@ -2,9 +2,9 @@ const express = require("express");
 const { google } = require("googleapis");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const dotenv = require("dotenv")
+const dotenv = require("dotenv");
 
-dotenv.config()
+dotenv.config();
 const app = express();
 
 const credentialString = process.env.LOGBOOK_VISITOR_API_KEY;
@@ -14,7 +14,7 @@ const credentials = JSON.parse(credentialString);
 // change origin url for the actual address if deployed online
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://visitor-logbook-unn4.vercel.app", "https://visitor-logbook.vercel.app", "https://visitor-logbook-zfy9.vercel.app", "https://visitor-logbook-q69t.vercel.app", "https://visitor-logbook-b88n.vercel.app"],
+    origin: ["http://localhost:5173", process.env.VITE_SERVER_URL],
   }),
   bodyParser.json(),
   bodyParser.urlencoded({ extended: true }),
@@ -23,11 +23,10 @@ app.use(
 
 const spreadsheetId = process.env.SPREADSHEET_ID;
 const auth = new google.auth.GoogleAuth({
-  keyFile: credentials,
   projectId: credentials.projectId,
   credentials: {
     client_email: credentials.client_email,
-    private_key: credentials.private_key
+    private_key: credentials.private_key,
   },
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
@@ -69,7 +68,6 @@ app.get("/", async (req, res) => {
   });
 });
 
-
 // Update the time out column of a visitor
 app.put("/timeout", async (req, res) => {
   const { index, timeOut } = req.body;
@@ -92,7 +90,6 @@ app.put("/timeout", async (req, res) => {
 
   res.status(200).send("Visitor timed out successfully!");
 });
-
 
 // Add new entry to the visitor's logbook
 app.post("/", async (req, res) => {
