@@ -14,7 +14,7 @@ const credentials = JSON.parse(credentialString);
 // change origin url for the actual address if deployed online
 app.use(
   cors({
-    origin: ["https://ord-visitor-logbook.vercel.app/", "http://localhost:5173"],
+    origin: "*",
   }),
   bodyParser.json(),
   bodyParser.urlencoded({ extended: true }),
