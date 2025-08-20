@@ -22,7 +22,7 @@ app.use(
 );
 
 app.use ((req, res, next) => {
-   res.header('Access-Control-Allow-Origin', 'https://ord-visitor-logbook.vercel.app/'); // Or '*' for all origins
+   res.header('Access-Control-Allow-Origin', '*'); // Or '*' for all origins
    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
    next();
 })
