@@ -130,7 +130,7 @@ export default function Home() {
         name: formdata.name || "-- Juan --",
         affiliation: formdata.affiliation || "--",
         purpose: formdata.purpose || "Consultation",
-        particulars: formdata.particulars || "--",
+        particulars: formdata.purpose === "Consultation" ? "--" : formdata.particulars,
         timeIn: formdata.in || new Date().toLocaleTimeString(), // Default to current time if out is not set
       }),
     })
