@@ -139,7 +139,7 @@ export default function NewVisitorForm({
 
         {
           formdata.purpose === "Request for Incentives" && (
-            <FormDropdown label="Request for Incentives" optionList={incentiveOptions} />
+            <FormDropdown label="Request for Incentives" optionList={incentiveOptions} formdata={formdata} setFormdata={setFormdata} />
           )
         }
 
