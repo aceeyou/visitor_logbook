@@ -32,11 +32,11 @@ export default function Home() {
   const handleTimeOut = useCallback(async (index) => {
     const timeOut = new Date().toLocaleTimeString();
 
-    await fetch(`${import.meta.env.VITE_SERVER_URL}/timeout`, {
+    await fetch(`https://visitor-logbook-oa8t.vercel.app/timeout`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "https://ord-visitor-logbook.vercel.app/"
       },
       body: JSON.stringify({ index, timeOut }),
     })
@@ -54,11 +54,11 @@ export default function Home() {
 
   // fetch visitors with blank time out
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_SERVER_URL}`, {
+    fetch(`https://visitor-logbook-oa8t.vercel.app`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "https://ord-visitor-logbook.vercel.app/"
 
       },
     })
@@ -123,11 +123,11 @@ export default function Home() {
       return;
     }
 
-    await fetch(`${import.meta.env.VITE_SERVER_URL}`, {
+    await fetch(`https://visitor-logbook-oa8t.vercel.app`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "https://ord-visitor-logbook.vercel.app/"
       },
       body: JSON.stringify({
         date: new Date().toLocaleDateString(),
