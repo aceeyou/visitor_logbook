@@ -1,12 +1,19 @@
 import React, { useEffect } from "react";
 import RequiredTag from "./RequiredTag";
 import FormDropdown from "./FormDropdown";
+import { RiseLoader } from "react-spinners";
+
+// Maybe allow multiple purpose of visit for more flexibility
+// for users not to type their purposes
 
 export default function NewVisitorForm({
   formdata,
   setFormdata,
   handleSubmitAPI,
   setExpanded,
+  submitting,
+  setSubmitting,
+  formBtn,
 }) {
   const [currentTime, setCurrentTime] = React.useState(new Date());
   let dateToday = new Date().toLocaleDateString("en-US", {
@@ -18,10 +25,10 @@ export default function NewVisitorForm({
   // Add or edit the selection for the purpose dropdown on the form
   const purposeOptions = [
     " -- Select Purpose --",
-    "Submit Research Document/s",
+    "Submit Document/s",
     "Claiming of Documents",
     "Request for Honorarium",
-    "Request for Incentives",
+    "Request on Incentives for...",
     "Consultation",
     "Other",
   ];
@@ -29,15 +36,18 @@ export default function NewVisitorForm({
   // Add or edit document options for the dropdown
   const researchDocumentOptions = [
     " -- Select Document --",
+    "Research Proposal/Compliance",
     "Accomplishment Report",
     "Terminal Report",
-    "Research Proposal/s",
   ];
 
   //
   const incentiveOptions = [
-    "-- Select Incentive Type --", "Publication", "Presentation", "Citation"
-  ]
+    "-- Select Incentive --",
+    "Publication",
+    "Presentation",
+    "Citation",
+  ];
 
   // Get the current time
   useEffect(() => {
@@ -70,11 +80,16 @@ export default function NewVisitorForm({
       </div>
       <h1 className="welcome-header">Welcome to the Office of</h1>
       <h1 className="welcome-header-2">Research and Development!</h1>
-      <p>Please fill out the form to register as a new visitor.</p>
+      <p>
+        Please fill out the{" "}
+        <b>
+          <em>Visitor E-Log form</em>
+        </b>{" "}
+        to register as a new visitor.
+      </p>
 
       <form onSubmit={handleSubmitAPI}>
         <div className="inline-input-grp">
-
           <div className="input-grp">
             <label htmlFor="name">
               Name <RequiredTag />
@@ -93,8 +108,20 @@ export default function NewVisitorForm({
             />
           </div>
           <div className="input-grp">
-            <label htmlFor="affiliation">Affiliation <RequiredTag /></label>
-            <input type="text" name="affiliation" id="affiliation" placeholder="College/Campus/Agency..." value={formdata.affiliation} onChange={e => setFormdata(old => ({ ...old, affiliation: e.target.value }))} />
+            <label htmlFor="affiliation">
+              Affiliation <RequiredTag />
+            </label>
+            <input
+              type="text"
+              name="affiliation"
+              id="affiliation"
+              placeholder="College/Campus/Agency..."
+              autoComplete="off"
+              value={formdata.affiliation}
+              onChange={(e) =>
+                setFormdata((old) => ({ ...old, affiliation: e.target.value }))
+              }
+            />
           </div>
         </div>
         <div className="input-grp">
@@ -106,7 +133,11 @@ export default function NewVisitorForm({
             id="purpose"
             value={formdata.purpose}
             onChange={(e) => {
-              setFormdata((old) => ({ ...old, purpose: e.target.value, particulars: "" }));
+              setFormdata((old) => ({
+                ...old,
+                purpose: e.target.value,
+                particulars: "",
+              }));
             }}
           >
             {purposeOptions.map((option, index) => (
@@ -117,9 +148,12 @@ export default function NewVisitorForm({
           </select>
         </div>
         {formdata.purpose === "Other" ||
-          formdata.purpose === "Claim Document" || formdata.purpose === "Request for Honorarium" ? (
+        formdata.purpose === "Claim Document" ||
+        formdata.purpose === "Request for Honorarium" ? (
           <div className="input-grp">
-            <label htmlFor="particulars">Particulars <RequiredTag /></label>
+            <label htmlFor="particulars">
+              Particulars <RequiredTag />
+            </label>
             <input
               type="text"
               name="particulars"
@@ -137,15 +171,20 @@ export default function NewVisitorForm({
           </div>
         ) : null}
 
-        {
-          formdata.purpose === "Request for Incentives" && (
-            <FormDropdown label="Request for Incentives" optionList={incentiveOptions} formdata={formdata} setFormdata={setFormdata} />
-          )
-        }
+        {formdata.purpose === "Request for Incentives" && (
+          <FormDropdown
+            label="Request for Incentives"
+            optionList={incentiveOptions}
+            formdata={formdata}
+            setFormdata={setFormdata}
+          />
+        )}
 
         {formdata.purpose === "Submit Research Document/s" && (
           <div className="input-grp">
-            <label htmlFor="researchDocument">Research Document <RequiredTag /></label>
+            <label htmlFor="researchDocument">
+              Research Document <RequiredTag />
+            </label>
             <select
               name="researchDocument"
               id="researchDocument"
@@ -165,8 +204,17 @@ export default function NewVisitorForm({
             </select>
           </div>
         )}
-        <div className="input-grp-btn">
-          <button type="submit">Submit</button>
+        <div className="input-grp-btn" onClick={() => setSubmitting(true)}>
+          <button
+            ref={formBtn}
+            type="submit"
+            style={{
+              backgroundColor: submitting ? "gray" : "var(--sorsu_red)",
+              cursor: submitting ? "none" : "pointer",
+            }}
+          >
+            {submitting ? <RiseLoader color="#ffffff" size={10} /> : "Submit"}
+          </button>
         </div>
       </form>
     </div>

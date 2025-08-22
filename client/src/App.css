@@ -299,6 +299,25 @@
         font-size: 1.125rem;
       }
     }
+
+    button {
+      width: 200px;
+      margin-left: auto;
+      background-color: var(--sorsu_red);
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.125em;
+      font-weight: 600;
+      transition: 250ms;
+
+      &:hover {
+        box-shadow: 0 0 6px #510101;
+        transform: scale(1.02);
+      }
+    }
   }
 }
 
@@ -315,7 +334,6 @@
 
 /* The blinking cursor animation */
 @keyframes blink-caret {
-
   from,
   to {
     border-color: transparent;

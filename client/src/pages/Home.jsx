@@ -5,17 +5,18 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import Confetti from "../components/Confetti";
 
-
 export default function Home() {
   const dialogReff = useRef(null);
   const dialogReffOut = useRef(null);
   const dialogInput = useRef(null);
+  const formBtn = useRef(null);
   const [visible, setVisible] = useState(false);
   const [visibleOut, setVisibleOut] = useState(false);
   const [visibleInputError, setVisibleInputError] = useState(false);
   const [nextRow, setNextRow] = useState();
   const [visitors, setVisitors] = useState([]);
   const [expanded, setExpanded] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [formdata, setFormdata] = useState({
     name: "",
     affiliation: "",
@@ -110,13 +111,18 @@ export default function Home() {
   const handleSubmitAPI = async (e) => {
     e.preventDefault();
 
-
-
     // if required fields are empty, then don't continue
-    if (formdata.name === "" || formdata.affiliation === "" || formdata.purpose === "" ||
-      ((formdata.purpose !== "Claiming of Documents" && formdata.purpose !== "Consultation") && formdata.particulars === "")) {
-      dialogInput.current.showModal()
-      setVisibleInputError(true)
+    if (
+      formdata.name === "" ||
+      formdata.affiliation === "" ||
+      formdata.purpose === "" ||
+      (formdata.purpose !== "Claiming of Documents" &&
+        formdata.purpose !== "Consultation" &&
+        formdata.particulars === "")
+    ) {
+      dialogInput.current.showModal();
+      setVisibleInputError(true);
+      setSubmitting(false);
       return;
     }
 
@@ -129,8 +135,16 @@ export default function Home() {
         date: new Date().toLocaleDateString(),
         name: formdata.name || "-- Juan --",
         affiliation: formdata.affiliation || "--",
-        purpose: formdata.purpose || "Consultation",
-        particulars: formdata.purpose === "Consultation" ? "--" : formdata.particulars,
+        purpose:
+          formdata.purpose === "Other"
+            ? formdata.particulars
+            : formdata.purpose
+            ? formdata.purpose
+            : "Consultation",
+        particulars:
+          formdata.purpose === "Consultation" || formdata.purpose === "Other"
+            ? "--"
+            : formdata.particulars,
         timeIn: formdata.in || new Date().toLocaleTimeString(), // Default to current time if out is not set
       }),
     })
@@ -147,9 +161,10 @@ export default function Home() {
         });
         setNextRow((old) => old + 1); // increment next row by 1
         setVisitors((old) => [...old, [nextRow + 1, formdata.name]]); // add new visitor to the visitors states
+        setSubmitting(false);
       })
       .catch((error) => console.log(error))
-      .finally(() => { });
+      .finally(() => {});
   };
 
   return (
@@ -196,6 +211,9 @@ export default function Home() {
             setFormdata={setFormdata}
             handleSubmitAPI={handleSubmitAPI}
             setExpanded={setExpanded}
+            submitting={submitting}
+            setSubmitting={setSubmitting}
+            formBtn={formBtn}
           />
         </div>
         {/* <Footer /> */}
