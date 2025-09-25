@@ -2,7 +2,6 @@ import Hero from "../components/Hero";
 import TimeOutTable from "../components/TimeOutTable";
 import NewVisitorForm from "../components/NewVisitorForm";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Footer from "../components/Footer";
 import Confetti from "../components/Confetti";
 
 export default function Home() {
@@ -22,6 +21,8 @@ export default function Home() {
     affiliation: "",
     purpose: "",
     particulars: "",
+    requestIncentives: "",
+    submitDocs: "",
     in: "",
   });
 
@@ -78,7 +79,12 @@ export default function Home() {
         setVisible(false);
       }, 4000);
     }
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+
+      // loads too fast. can't be the solution
+      // window.location.reload();
+    };
   }, [visible]);
 
   // modal time out for Visitor Time out
@@ -115,10 +121,8 @@ export default function Home() {
     if (
       formdata.name === "" ||
       formdata.affiliation === "" ||
-      formdata.purpose === "" ||
-      (formdata.purpose !== "Claiming of Documents" &&
-        formdata.purpose !== "Consultation" &&
-        formdata.particulars === "")
+      (formdata.purpose === "" &&
+        (formdata.requestIncentives === "" || formdata.submitDocs === ""))
     ) {
       dialogInput.current.showModal();
       setVisibleInputError(true);
@@ -133,18 +137,10 @@ export default function Home() {
       },
       body: JSON.stringify({
         date: new Date().toLocaleDateString(),
-        name: formdata.name || "-- Juan --",
-        affiliation: formdata.affiliation || "--",
-        purpose:
-          formdata.purpose === "Other"
-            ? formdata.particulars
-            : formdata.purpose
-            ? formdata.purpose
-            : "Consultation",
-        particulars:
-          formdata.purpose === "Consultation" || formdata.purpose === "Other"
-            ? "--"
-            : formdata.particulars,
+        name: formdata.name,
+        affiliation: formdata.affiliation,
+        purpose: `${formdata.submitDocs}, ${formdata.requestIncentives}, ${formdata.purpose}`,
+        particulars: formdata.purpose === "" ? "--" : formdata.particulars,
         timeIn: formdata.in || new Date().toLocaleTimeString(), // Default to current time if out is not set
       }),
     })
@@ -157,6 +153,8 @@ export default function Home() {
           affiliation: "",
           purpose: "",
           particulars: "",
+          submitDocs: "",
+          requestIncentives: "",
           in: "",
         });
         setNextRow((old) => old + 1); // increment next row by 1

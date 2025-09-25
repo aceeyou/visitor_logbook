@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import RequiredTag from "./RequiredTag";
 import FormDropdown from "./FormDropdown";
 import { RiseLoader } from "react-spinners";
+import Checkbox from "./Checkbox";
 
 // Maybe allow multiple purpose of visit for more flexibility
 // for users not to type their purposes
@@ -24,8 +25,8 @@ export default function NewVisitorForm({
 
   // Add or edit the selection for the purpose dropdown on the form
   const purposeOptions = [
-    " -- Select Purpose --",
-    "Submit Document/s",
+    // " -- Select Purpose --",
+    "Submit Research Document/s",
     "Claiming of Documents",
     "Request for Honorarium",
     "Request on Incentives for...",
@@ -68,7 +69,7 @@ export default function NewVisitorForm({
           type="button"
           onClick={() => setExpanded(true)}
         >
-          Time Out Now
+          Click here to Log Out
         </button>
         <p className="date-time">
           {dateToday} -{" "}
@@ -78,8 +79,18 @@ export default function NewVisitorForm({
           })}
         </p>
       </div>
-      <h1 className="welcome-header">Welcome to the Office of</h1>
-      <h1 className="welcome-header-2">Research and Development!</h1>
+      <h1
+        className={`welcome-header`}
+        // style={{ fontSize: formdata.purpose ? "2rem" : "3em" }}
+      >
+        Welcome to the Office of
+      </h1>
+      <h1
+        className="welcome-header-2"
+        // style={{ fontSize: formdata.purpose ? "2rem" : "3em" }}
+      >
+        Research and Development!
+      </h1>
       <p>
         Please fill out the{" "}
         <b>
@@ -126,33 +137,29 @@ export default function NewVisitorForm({
         </div>
         <div className="input-grp">
           <label htmlFor="purpose">
-            Purpose <RequiredTag />
+            {`Purpose (select all that may apply)`} <RequiredTag />
           </label>
-          <select
-            name="purpose"
-            id="purpose"
-            value={formdata.purpose}
-            onChange={(e) => {
-              setFormdata((old) => ({
-                ...old,
-                purpose: e.target.value,
-                particulars: "",
-              }));
-            }}
-          >
+          <div className="purpose-checkbox-container">
             {purposeOptions.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
-              </option>
+              <Checkbox
+                content={option}
+                key={index}
+                setFormdata={setFormdata}
+                submitting={submitting}
+              />
             ))}
-          </select>
+          </div>
         </div>
-        {formdata.purpose === "Other" ||
-        formdata.purpose === "Claim Document" ||
-        formdata.purpose === "Request for Honorarium" ? (
+
+        {/* Shows the particulars input field */}
+        {formdata.purpose.includes("Other") ||
+        formdata.purpose.includes("Claiming of Documents") ||
+        formdata.purpose.includes("Request for Honorarium") ? (
           <div className="input-grp">
             <label htmlFor="particulars">
-              Particulars <RequiredTag />
+              Particulars of Honorarium Claims/Claiming of Documents/Other
+              purposes of visit {""}
+              <RequiredTag />
             </label>
             <input
               type="text"
@@ -171,39 +178,31 @@ export default function NewVisitorForm({
           </div>
         ) : null}
 
-        {formdata.purpose === "Request for Incentives" && (
+        {/* Selective type of incentive */}
+        {formdata.requestIncentives && (
           <FormDropdown
-            label="Request for Incentives"
+            label="Request for Incentives for..."
             optionList={incentiveOptions}
             formdata={formdata}
             setFormdata={setFormdata}
           />
         )}
 
-        {formdata.purpose === "Submit Research Document/s" && (
-          <div className="input-grp">
-            <label htmlFor="researchDocument">
-              Research Document <RequiredTag />
-            </label>
-            <select
-              name="researchDocument"
-              id="researchDocument"
-              value={formdata.particulars}
-              onChange={(e) =>
-                setFormdata((old) => ({
-                  ...old,
-                  particulars: e.target.value,
-                }))
-              }
-            >
-              {researchDocumentOptions.map((option, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
+        {/* Submit Research Document */}
+        {formdata.submitDocs && (
+          <FormDropdown
+            label="Submit Document/s"
+            optionList={researchDocumentOptions}
+            formdata={formdata}
+            setFormdata={setFormdata}
+          />
         )}
+
+        {/* <p>
+          {formdata.purpose}
+          {formdata.requestIncentives}, {formdata.submitDocs},{" "}
+          {formdata.particulars}
+        </p> */}
         <div className="input-grp-btn" onClick={() => setSubmitting(true)}>
           <button
             ref={formBtn}
